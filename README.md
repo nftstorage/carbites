@@ -1,0 +1,26 @@
+# carbites
+
+Chunking for CAR files. Split a single CAR into multiple CARs.
+
+## Install
+
+```sh
+npm install carbites
+```
+
+## Usage
+
+```js
+import { Carbites } from 'carbites'
+import { CarReader } from '@ipld/car/reader'
+import fs from 'fs'
+
+const bigCar = fs.createReadStream('/path/to/big.car')
+const reader = CarReader.fromIterable(bigCar)
+const targetSize = 1024 * 1024 * 100 // chunk to ~100MB CARs
+const chunker = new Carbites(reader, targetSize)
+
+for await (const car of chunker.cars()) {
+  // Each `car` is an AsyncIterable<Uint8Array>
+}
+```
