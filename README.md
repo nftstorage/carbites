@@ -1,6 +1,10 @@
 # carbites
 
+[![dependencies Status](https://status.david-dm.org/gh/alanshaw/carbites.svg)](https://david-dm.org/alanshaw/carbites)
+
 Chunking for CAR files. Split a single CAR into multiple CARs.
+
+⚠️ v0.x uses naive algorithm and creates multi root CAR files.
 
 ## Install
 
@@ -24,3 +28,11 @@ for await (const car of chunker.cars()) {
   // Each `car` is an AsyncIterable<Uint8Array>
 }
 ```
+
+## Contribute
+
+Feel free to dive in! [Open an issue](https://github.com/alanshaw/carbites/issues/new) or submit PRs.
+
+# License
+
+Dual-licensed under [MIT](https://github.com/ipfs-shipyard/nft.storage/blob/main/LICENSE-MIT) + [Apache 2.0](https://github.com/ipfs-shipyard/nft.storage/blob/main/LICENSE-APACHE)
