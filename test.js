@@ -74,6 +74,25 @@ test('target size bigger than file size', async t => {
   t.true(bytesEqual(bytes, await collectBytes(cars[0])))
 })
 
+test('only roots in first car', async t => {
+  const targetSize = 100
+  const bytes = await collectBytes(await randomCar(1000))
+  const reader = await CarReader.fromBytes(bytes)
+  const chunker = new Carbites(reader, targetSize)
+  let i = 0
+  for await (const car of chunker.cars()) {
+    const reader = await CarReader.fromIterable(car)
+    const roots = await reader.getRoots()
+    if (i === 0) {
+      t.true(roots.length > 0)
+    } else {
+      t.is(roots.length, 0)
+    }
+    i++
+  }
+  t.true(i > 1)
+})
+
 test('bad target size', t => {
   t.throws(() => new Carbites(null, -1))
 })

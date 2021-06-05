@@ -4,7 +4,7 @@
 
 Chunking for CAR files. Split a single CAR into multiple CARs.
 
-⚠️ v0.x uses naive algorithm and creates multi root CAR files.
+⚠️ v0.x uses naive algorithm and emitted CAR files that are not the first have 0 roots.
 
 ## Install
 

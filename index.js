@@ -15,7 +15,7 @@ export class Carbites {
 
   async * cars () {
     const allBlocks = this._reader.blocks()
-    let roots = await this._reader.getRoots()
+    const roots = await this._reader.getRoots()
     let blocks = []
     let size = 0
     let first = true
@@ -28,15 +28,13 @@ export class Carbites {
           finished = true
           break
         }
-        if (!first) roots.push(block.cid)
         blocks.push(block)
         size += block.bytes.length
       }
-      const { writer, out } = CarWriter.create(roots)
+      const { writer, out } = CarWriter.create(first ? roots : [])
       blocks.forEach(b => writer.put(b))
       writer.close()
       yield out
-      roots = []
       blocks = []
       size = 0
       first = false
