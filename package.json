@@ -30,5 +30,26 @@
     "ignore": [
       "*.d.ts"
     ]
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alanshaw/carbites.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alanshaw/carbites/issues"
+  },
+  "homepage": "https://github.com/alanshaw/carbites#readme",
+  "keywords": [
+    "car",
+    "content",
+    "archive",
+    "CID",
+    "IPLD",
+    "multiformats",
+    "chunk",
+    "chunker",
+    "chunking",
+    "split",
+    "splitter"
+  ]
 }
