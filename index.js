@@ -1,4 +1,4 @@
-import { CarWriter } from '@ipld/car'
+import { CarWriter } from '@ipld/car/writer'
 import { mkRootNode } from './root-node.js'
 
 /**
