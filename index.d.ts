@@ -1,6 +1,6 @@
 import { CarReader } from '@ipld/car'
 
-export class Carbites {
+export class CarBiter {
   /**
    * Create a new CAR file chunker.
    * @param reader The CAR file to chunk into smaller CARs.
@@ -12,3 +12,5 @@ export class Carbites {
    */
   cars (): AsyncGenerator<AsyncIterable<Uint8Array>>
 }
+
+export class RootedCarBiter extends CarBiter {}

@@ -4,7 +4,7 @@ import fs from 'fs'
 import { pipeline } from 'stream/promises'
 import { CarReader } from '@ipld/car'
 import bytes from 'bytes'
-import { Carbites } from '../index.js'
+import { CarBiter } from '../index.js'
 
 async function main () {
   if (!process.argv[2]) {
@@ -24,7 +24,7 @@ async function main () {
   }
 
   const reader = await CarReader.fromIterable(input)
-  const cb = new Carbites(reader, size)
+  const cb = new CarBiter(reader, size)
   let i = 0
   for await (const car of cb.cars()) {
     await pipeline(car, fs.createWriteStream(`${name}-${i}.car`))

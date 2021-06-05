@@ -4,7 +4,7 @@ import { garbage } from 'ipld-garbage'
 import * as dagCbor from '@ipld/dag-cbor'
 import { sha256 } from 'multiformats/hashes/sha2'
 import { CID } from 'multiformats/cid'
-import { Carbites } from './index.js'
+import { CarBiter, RootedCarBiter } from './index.js'
 
 function randomInt (min, max) {
   return Math.random() * (max - min) + min
@@ -48,7 +48,7 @@ test('chunk in ~two', async t => {
   const bytes = await collectBytes(await randomCar(1000))
   const blocks = await collect((await CarReader.fromBytes(bytes)).blocks())
   const reader = await CarReader.fromBytes(bytes)
-  const chunker = new Carbites(reader, targetSize)
+  const chunker = new CarBiter(reader, targetSize)
   const cars = []
   for await (const car of chunker.cars()) {
     cars.push(car)
@@ -65,7 +65,7 @@ test('chunk in ~two', async t => {
 test('target size bigger than file size', async t => {
   const bytes = await collectBytes(await randomCar(1000))
   const reader = await CarReader.fromBytes(bytes)
-  const chunker = new Carbites(reader, Infinity)
+  const chunker = new CarBiter(reader, Infinity)
   const cars = []
   for await (const car of chunker.cars()) {
     cars.push(car)
@@ -78,7 +78,7 @@ test('only roots in first car', async t => {
   const targetSize = 100
   const bytes = await collectBytes(await randomCar(1000))
   const reader = await CarReader.fromBytes(bytes)
-  const chunker = new Carbites(reader, targetSize)
+  const chunker = new CarBiter(reader, targetSize)
   let i = 0
   for await (const car of chunker.cars()) {
     const reader = await CarReader.fromIterable(car)
@@ -94,5 +94,29 @@ test('only roots in first car', async t => {
 })
 
 test('bad target size', t => {
-  t.throws(() => new Carbites(null, -1))
+  t.throws(() => new CarBiter(null, -1))
+})
+
+test('root nodes', async t => {
+  const targetSize = 500
+  const bytes = await collectBytes(await randomCar(1000))
+  const blocks = await collect((await CarReader.fromBytes(bytes)).blocks())
+  const reader = await CarReader.fromBytes(bytes)
+  const chunker = new RootedCarBiter(reader, targetSize)
+  const cars = []
+  for await (const car of chunker.cars()) {
+    cars.push(car)
+  }
+  t.true(cars.length >= 2)
+  const chunkedBlocks = []
+  for (const c of cars) {
+    const bs = await collect((await CarReader.fromIterable(c)).blocks())
+    const root = dagCbor.decode(bs[0].bytes)
+    t.true(Array.isArray(root))
+    t.is(root.length, 2)
+    t.is(root[0], '/carbites/1')
+    t.true(Array.isArray(root[1]))
+    chunkedBlocks.push(...bs.slice(1))
+  }
+  t.is(blocks.length, chunkedBlocks.length)
 })
