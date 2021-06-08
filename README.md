@@ -13,33 +13,30 @@ npm install carbites
 ## Usage
 
 ```js
-import { CarBiter } from 'carbites'
-import { CarReader } from '@ipld/car/reader'
+import { CarSplitter } from 'carbites'
 import fs from 'fs'
 
 const bigCar = fs.createReadStream('/path/to/big.car')
-const reader = await CarReader.fromIterable(bigCar)
 const targetSize = 1024 * 1024 * 100 // chunk to ~100MB CARs
-const chunker = new CarBiter(reader, targetSize)
+const splitter = new CarSplitter(bigCar, targetSize)
 
-for await (const car of chunker.cars()) {
+for await (const car of splitter.cars()) {
   // Each `car` is an AsyncIterable<Uint8Array>
   // ⚠️ Note: only the first CAR output has roots in the header!
 }
 ```
 
-Some CAR implementations require a **single root CID in the header** of a CAR file. To generate a root node for each split CAR, use the `RootedCarBiter` constructor. When reading/extracting data from the CARs, the root node should be discarded.
+Some CAR implementations require a **single root CID in the header** of a CAR file. To generate a root node for each split CAR, use the `RootedCarSplitter` constructor. When reading/extracting data from the CARs, the root node should be discarded.
 
 ```js
-import { RootedCarBiter } from 'carbites'
+import { RootedCarSplitter } from 'carbites/rooted'
 import { CarReader } from '@ipld/car/reader'
 import * as dagCbor from '@ipld/dag-cbor'
 import fs from 'fs'
 
 const bigCar = fs.createReadStream('/path/to/big.car')
-const reader = await CarReader.fromIterable(bigCar)
 const targetSize = 1024 * 1024 * 100 // chunk to ~100MB CARs
-const chunker = new RootedCarBiter(reader, targetSize)
+const chunker = new RootedCarSplitter(bigCar, targetSize)
 
 const cars = chunker.cars()
 
@@ -61,6 +58,35 @@ console.log(rootNode[1])
 ]
 */
 ```
+
+Note: The root node is limited to 4MB in size (the largest message IPFS will bitswap). Depending on the settings used to construct the DAG in the CAR, this may mean a split CAR size limit of around 30GiB.
+
+### CLI
+
+```sh
+npm i -g carbites
+
+# Split a big CAR into many smaller CARs
+carbites split big.car --size 100MB # (default size)
+
+# Join many split CARs back into a single CAR.
+carbites join big-0.car big-1.car ...
+# Note: not a tool for joining arbitrary CARs together! The split CARs MUST
+# belong to the same CAR and big-0.car should be the first argument.
+```
+
+## API
+
+* [`class CarSplitter`](#carsplitter)
+* [`async * CarSplitter#cars()`](#async-carsplitter-cars)
+* [`class CarJoiner`](#carjoiner)
+* [`async * CarJoiner#car()`](#async-carjoiner-car)
+* [`class RootedCarSplitter`](#rootedcarsplitter)
+* [`async * RootedCarSplitter#cars()`](#async-rootedcarsplitter-cars)
+* [`class RootedCarJoiner`](#rootedcarjoiner)
+* [`async * RootedCarJoiner#car()`](#async-rootedcarjoiner-car)
+
+TODO
 
 ## Contribute
 

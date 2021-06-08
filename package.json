@@ -18,6 +18,7 @@
     "@ipld/car": "^3.0.1",
     "@ipld/dag-cbor": "^6.0.3",
     "bytes": "^3.1.0",
+    "meow": "^10.0.1",
     "multiformats": "^9.0.2"
   },
   "devDependencies": {
