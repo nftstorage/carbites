@@ -77,16 +77,94 @@ carbites join big-0.car big-1.car ...
 
 ## API
 
-* [`class CarSplitter`](#carsplitter)
-* [`async * CarSplitter#cars()`](#async-carsplitter-cars)
-* [`class CarJoiner`](#carjoiner)
-* [`async * CarJoiner#car()`](#async-carjoiner-car)
-* [`class RootedCarSplitter`](#rootedcarsplitter)
-* [`async * RootedCarSplitter#cars()`](#async-rootedcarsplitter-cars)
-* [`class RootedCarJoiner`](#rootedcarjoiner)
-* [`async * RootedCarJoiner#car()`](#async-rootedcarjoiner-car)
+* [`class CarSplitter`](#class-carsplitter)
+    * [`constructor(car: AsyncIterable<Uint8Array>, targetSize: number)`](#constructor-car-asynciterable-uint8array-targetsize-number)
+    * [`cars(): AsyncGenerator<AsyncIterable<Uint8Array>>`](#cars-asyncgenerator-asynciterable-uint8array)
+* [`class CarJoiner`](#class-carjoiner)
+    * [`constructor(cars: Iterable<AsyncIterable<Uint8Array>>)`](#constructor-cars-iterable-asynciterable-uint8array)
+    * [`car(): AsyncGenerator<Uint8Array>`](#car-asyncgenerator-uint8array)
+* [`class RootedCarSplitter`](#class-rootedcarsplitter)
+* [`class RootedCarJoiner`](#class-rootedcarjoiner)
 
-TODO
+### `class CarSplitter`
+
+Split a CAR file into several smaller CAR files.
+
+Import in the browser:
+
+```js
+import { CarSplitter } from 'https://cdn.skypack.dev/carbites'
+```
+
+Import in Node.js:
+
+```js
+import { CarSplitter } from 'carbites'
+```
+
+#### `constructor(car: AsyncIterable<Uint8Array>, targetSize: number)`
+
+Create a new `CarSplitter` for the passed CAR file, aiming to generate CARs of around `targetSize` bytes in size.
+
+#### `cars(): AsyncGenerator<AsyncIterable<Uint8Array>>`
+
+Split the CAR file and create multiple smaller CAR files. Returns an `AsyncGenerator` that yields the split CAR files (of type `AsyncIterable<Uint8Array>`).
+
+### `class CarJoiner`
+
+Join together split CAR files into a single big CAR.
+
+Import in the browser:
+
+```js
+import { CarJoiner } from 'https://cdn.skypack.dev/carbites'
+```
+
+Import in Node.js:
+
+```js
+import { CarJoiner } from 'carbites'
+```
+
+#### `constructor(cars: Iterable<AsyncIterable<Uint8Array>>)`
+
+Create a new `CarJoiner`  for joining the passed CAR files together.
+
+#### `car(): AsyncGenerator<Uint8Array>`
+
+Join the CAR files together and return the joined CAR.
+
+### `class RootedCarSplitter`
+
+Split a CAR file into several smaller CAR files ensuring every CAR file contains a single root node.
+
+Some CAR implementations require a single root CID in the header of a CAR file. When reading/extracting data from the CARs, the root node should be discarded.
+
+Import in the browser:
+
+```js
+import { RootedCarSplitter } from 'https://cdn.skypack.dev/carbites/rooted'
+```
+
+Import in Node.js:
+
+```js
+import { RootedCarSplitter } from 'carbites/rooted'
+```
+
+The API is the same as for [`CarSplitter`](#class-carsplitter).
+
+#### Root Node Format
+
+The root node is a `dag-cbor` node that is a tuple of the string `/carbites/1` and an array of CIDs. e.g. `['/carbites/1', ['bafy1', 'bafy2']]`.
+
+Note: The root node is limited to 4MB in size (the largest message IPFS will bitswap). Depending on the settings used to construct the DAG in the CAR, this may mean a split CAR size limit of around 30GiB.
+
+### `class RootedCarJoiner`
+
+Join together CAR files that were split using [`RootedCarSplitter`](#class-rootedcarsplitter).
+
+The API is the same as for [`CarJoiner`](#class-carjoiner).
 
 ## Contribute
 
