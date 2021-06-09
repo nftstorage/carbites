@@ -79,7 +79,7 @@ carbites join big-0.car big-1.car ...
 
 * [`class CarSplitter`](#class-carsplitter)
     * [`constructor(car: AsyncIterable<Uint8Array>, targetSize: number)`](#constructorcar-asynciterableuint8array-targetsize-number)
-    * [`cars(): AsyncGenerator<AsyncIterable<Uint8Array>>`](#cars-asyncgenerator-asynciterableuint8array)
+    * [`cars(): AsyncGenerator<AsyncIterable<Uint8Array>>`](#cars-asyncgeneratorasynciterableuint8array)
 * [`class CarJoiner`](#class-carjoiner)
     * [`constructor(cars: Iterable<AsyncIterable<Uint8Array>>)`](#constructorcars-iterableasynciterableuint8array)
     * [`car(): AsyncGenerator<Uint8Array>`](#car-asyncgeneratoruint8array)
