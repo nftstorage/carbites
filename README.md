@@ -78,11 +78,11 @@ carbites join big-0.car big-1.car ...
 ## API
 
 * [`class CarSplitter`](#class-carsplitter)
-    * [`constructor(car: AsyncIterable<Uint8Array>, targetSize: number)`](#constructor-car-asynciterable-uint8array-targetsize-number)
-    * [`cars(): AsyncGenerator<AsyncIterable<Uint8Array>>`](#cars-asyncgenerator-asynciterable-uint8array)
+    * [`constructor(car: AsyncIterable<Uint8Array>, targetSize: number)`](#constructorcar-asynciterableuint8array-targetsize-number)
+    * [`cars(): AsyncGenerator<AsyncIterable<Uint8Array>>`](#cars-asyncgenerator-asynciterableuint8array)
 * [`class CarJoiner`](#class-carjoiner)
-    * [`constructor(cars: Iterable<AsyncIterable<Uint8Array>>)`](#constructor-cars-iterable-asynciterable-uint8array)
-    * [`car(): AsyncGenerator<Uint8Array>`](#car-asyncgenerator-uint8array)
+    * [`constructor(cars: Iterable<AsyncIterable<Uint8Array>>)`](#constructorcars-iterableasynciterableuint8array)
+    * [`car(): AsyncGenerator<Uint8Array>`](#car-asyncgeneratoruint8array)
 * [`class RootedCarSplitter`](#class-rootedcarsplitter)
 * [`class RootedCarJoiner`](#class-rootedcarjoiner)
 
