@@ -1,5 +1,6 @@
 # carbites
 
+[![Build](https://github.com/alanshaw/carbites/actions/workflows/main.yml/badge.svg)](https://github.com/alanshaw/carbites/actions/workflows/main.yml)
 [![dependencies Status](https://status.david-dm.org/gh/alanshaw/carbites.svg)](https://david-dm.org/alanshaw/carbites)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
