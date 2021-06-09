@@ -1,6 +1,5 @@
 # carbites
 
-[![Build Status](https://travis-ci.com/alanshaw/carbites.svg?branch=main)](https://travis-ci.com/alanshaw/carbites)
 [![dependencies Status](https://status.david-dm.org/gh/alanshaw/carbites.svg)](https://david-dm.org/alanshaw/carbites)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
