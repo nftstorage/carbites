@@ -170,6 +170,6 @@ The API is the same as for [`CarJoiner`](#class-carjoiner).
 
 Feel free to dive in! [Open an issue](https://github.com/alanshaw/carbites/issues/new) or submit PRs.
 
-# License
+## License
 
 Dual-licensed under [MIT](https://github.com/alanshaw/carbites/blob/main/LICENSE-MIT) + [Apache 2.0](https://github.com/alanshaw/carbites/blob/main/LICENSE-APACHE)
