@@ -42,8 +42,9 @@ const chunker = new RootedCarSplitter(bigCar, targetSize)
 
 const cars = chunker.cars()
 
-// Every CAR has a single root - a CBOR node that is an tuple of `/carbites/1`
-// and an array of CIDs. e.g. ['/carbites/1', ['bafy1', 'bafy2']]
+// Every CAR has a single root - a CBOR node that is an tuple of `/carbites/1`,
+// an array of root CIDs and an array of block CIDs.
+// e.g. ['/carbites/1', ['bafkroot'], ['bafy1', 'bafy2']]
 
 const { done, value: car } = await cars.next()
 const reader = await CarReader.fromIterable(car)
@@ -51,7 +52,13 @@ const rootCids = await reader.getRoots()
 const rootNode = dagCbor.decode(await reader.get(rootCids[0]))
 
 console.log(rootNode[0]) // /carbites/1
-console.log(rootNode[1])
+console.log(rootNode[1]) // Root CIDs (only in first CAR)
+/*
+[
+  CID(bafybeictvyf6polqzgop3jt32owubfmsg3kl226omqrfte4eyidubc4rpq)
+]
+*/
+console.log(rootNode[2]) // Block CIDs (all blocks in this CAR)
 /*
 [
   CID(bafyreihcsxqhd6agqpboc3wrlvpy5bwuxctv5upicdnt3u2wojv4exxl24),
@@ -158,7 +165,7 @@ The API is the same as for [`CarSplitter`](#class-carsplitter).
 
 #### Root Node Format
 
-The root node is a `dag-cbor` node that is a tuple of the string `/carbites/1` and an array of CIDs. e.g. `['/carbites/1', ['bafy1', 'bafy2']]`.
+The root node is a `dag-cbor` node that is a tuple of the string `/carbites/1`, an array of root CIDs (only seen in first CAR) and an array of block CIDs (all the blocks in the CAR). e.g. `['/carbites/1', ['bafkroot'], ['bafy1', 'bafy2']]`.
 
 Note: The root node is limited to 4MB in size (the largest message IPFS will bitswap). Depending on the settings used to construct the DAG in the CAR, this may mean a split CAR size limit of around 30GiB.
 

@@ -71,9 +71,10 @@ test('root nodes', async t => {
     const bs = await collect((await CarReader.fromIterable(c)).blocks())
     const root = dagCbor.decode(bs[0].bytes)
     t.true(Array.isArray(root))
-    t.is(root.length, 2)
+    t.is(root.length, 3)
     t.is(root[0], '/carbites/1')
     t.true(Array.isArray(root[1]))
+    t.true(Array.isArray(root[2]))
     chunkedBlocks.push(...bs.slice(1))
   }
   t.is(blocks.length, chunkedBlocks.length)

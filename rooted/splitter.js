@@ -22,7 +22,7 @@ export class RootedCarSplitter extends CarSplitter {
         blocks.push(block)
         size += block.bytes.length
       }
-      const root = await mkRootNode(first ? roots : blocks.map(b => b.cid))
+      const root = await mkRootNode(first ? roots : [], blocks.map(b => b.cid))
       const { writer, out } = CarWriter.create(root.cid)
       writer.put(root)
       blocks.forEach(b => writer.put(b))

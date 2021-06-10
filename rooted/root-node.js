@@ -8,12 +8,14 @@ import { Block } from 'multiformats/block'
 const MAX_SIZE = 1024 * 1024 * 4
 
 /**
- * @param {Iterable<import('multiformats/cid').CID>} children
+ * Make a carbites root node. Format: ['/carbites/1', roots, blocks]
+ * @param {Iterable<import('multiformats/cid').CID>} roots
+ * @param {Iterable<import('multiformats/cid').CID>} blocks
  * @returns {Promise<import('multiformats/block').Block<RootNode>}
  */
-export async function mkRootNode (children) {
+export async function mkRootNode (roots, blocks) {
   /** @type {RootNode} */
-  const value = ['/carbites/1', Array.from(children)]
+  const value = ['/carbites/1', Array.from(roots), Array.from(blocks)]
   const bytes = encode(value)
   // FIXME: Given a V1 CID of ~36 bytes and the default IPFS chunk size of
   // 262,144 bytes you'd need to be splitting at 30GiB or more to experience
@@ -32,8 +34,9 @@ export async function mkRootNode (children) {
  */
 export function isRootNode (node) {
   if (!Array.isArray(node)) return false
-  if (node.length !== 2) return false
+  if (node.length !== 3) return false
   if (node[0] !== '/carbites/1') return false
   if (!Array.isArray(node[1])) return false
+  if (!Array.isArray(node[2])) return false
   return true
 }
