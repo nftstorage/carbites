@@ -61,9 +61,9 @@ console.log(rootNode[1]) // Root CIDs (only in first CAR)
 console.log(rootNode[2]) // Block CIDs (all blocks in this CAR)
 /*
 [
+  CID(bafybeictvyf6polqzgop3jt32owubfmsg3kl226omqrfte4eyidubc4rpq),
   CID(bafyreihcsxqhd6agqpboc3wrlvpy5bwuxctv5upicdnt3u2wojv4exxl24),
-  CID(bafyreiasq7d2ihbqm5xvhjjzlmzsensuadrpmpt2tkjsuwq42xpa34qevu),
-  CID(bafyreibg623uhbcz4iudzplvftdn3ewrezyhlddpnjsjt5jzhc3qpaiyd4)
+  CID(bafyreiasq7d2ihbqm5xvhjjzlmzsensuadrpmpt2tkjsuwq42xpa34qevu)
 ]
 */
 ```
