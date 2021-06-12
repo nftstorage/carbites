@@ -3,6 +3,7 @@
 [![Build](https://github.com/alanshaw/carbites/actions/workflows/main.yml/badge.svg)](https://github.com/alanshaw/carbites/actions/workflows/main.yml)
 [![dependencies Status](https://status.david-dm.org/gh/alanshaw/carbites.svg)](https://david-dm.org/alanshaw/carbites)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/carbites)
 
 Chunking for CAR files. Split a single CAR into multiple CARs.
 
@@ -27,7 +28,7 @@ for await (const car of splitter.cars()) {
 }
 ```
 
-⚠️ Note: The first CAR output has roots in the header, subsequent CARs have an empty root CID [`bafkqaaa`](https://cid.ipfs.io/#bafkqaaa).
+⚠️ Note: The first CAR output has roots in the header, subsequent CARs have an empty root CID [`bafkqaaa`](https://cid.ipfs.io/#bafkqaaa) as [recommended](https://github.com/ipld/specs/blob/master/block-layer/content-addressable-archives.md#number-of-roots).
 
 Instead of an empty CID, carbites can generate a special root node for each split CAR that references all the blocks _and_ the original roots (only in the first CAR). To do this, use the `RootedCarSplitter` constructor. When reading/extracting data from the CARs, the root node should be discarded.
 
