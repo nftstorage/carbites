@@ -32,45 +32,50 @@ for await (const car of splitter.cars()) {
 
 Instead of an empty CID, carbites can generate a special root node for each split CAR that references all the blocks _and_ the original roots (only in the first CAR). To do this, use the `RootedCarSplitter` constructor. When reading/extracting data from the CARs, the root node should be discarded.
 
-```js
-import { RootedCarSplitter } from 'carbites/rooted'
-import { CarReader } from '@ipld/car/reader'
-import * as dagCbor from '@ipld/dag-cbor'
-import fs from 'fs'
+<details>
+  <summary>Example</summary>
 
-const bigCar = fs.createReadStream('/path/to/big.car')
-const targetSize = 1024 * 1024 * 100 // chunk to ~100MB CARs
-const chunker = new RootedCarSplitter(bigCar, targetSize)
+  ```js
+  import { RootedCarSplitter } from 'carbites/rooted'
+  import { CarReader } from '@ipld/car/reader'
+  import * as dagCbor from '@ipld/dag-cbor'
+  import fs from 'fs'
 
-const cars = chunker.cars()
+  const bigCar = fs.createReadStream('/path/to/big.car')
+  const targetSize = 1024 * 1024 * 100 // chunk to ~100MB CARs
+  const chunker = new RootedCarSplitter(bigCar, targetSize)
 
-// Every CAR has a single root - a CBOR node that is an tuple of `/carbites/1`,
-// an array of root CIDs and an array of block CIDs.
-// e.g. ['/carbites/1', ['bafkroot'], ['bafy1', 'bafy2']]
+  const cars = chunker.cars()
 
-const { done, value: car } = await cars.next()
-const reader = await CarReader.fromIterable(car)
-const rootCids = await reader.getRoots()
-const rootNode = dagCbor.decode(await reader.get(rootCids[0]))
+  // Every CAR has a single root - a CBOR node that is an tuple of `/carbites/1`,
+  // an array of root CIDs and an array of block CIDs.
+  // e.g. ['/carbites/1', ['bafkroot'], ['bafy1', 'bafy2']]
 
-console.log(rootNode[0]) // /carbites/1
-console.log(rootNode[1]) // Root CIDs (only in first CAR)
-/*
-[
-  CID(bafybeictvyf6polqzgop3jt32owubfmsg3kl226omqrfte4eyidubc4rpq)
-]
-*/
-console.log(rootNode[2]) // Block CIDs (all blocks in this CAR)
-/*
-[
-  CID(bafybeictvyf6polqzgop3jt32owubfmsg3kl226omqrfte4eyidubc4rpq),
-  CID(bafyreihcsxqhd6agqpboc3wrlvpy5bwuxctv5upicdnt3u2wojv4exxl24),
-  CID(bafyreiasq7d2ihbqm5xvhjjzlmzsensuadrpmpt2tkjsuwq42xpa34qevu)
-]
-*/
-```
+  const { done, value: car } = await cars.next()
+  const reader = await CarReader.fromIterable(car)
+  const rootCids = await reader.getRoots()
+  const rootNode = dagCbor.decode(await reader.get(rootCids[0]))
 
-Note: The root node is limited to 4MB in size (the largest message IPFS will bitswap). Depending on the settings used to construct the DAG in the CAR, this may mean a split CAR size limit of around 30GiB.
+  console.log(rootNode[0]) // /carbites/1
+  console.log(rootNode[1]) // Root CIDs (only in first CAR)
+  /*
+  [
+    CID(bafybeictvyf6polqzgop3jt32owubfmsg3kl226omqrfte4eyidubc4rpq)
+  ]
+  */
+  console.log(rootNode[2]) // Block CIDs (all blocks in this CAR)
+  /*
+  [
+    CID(bafybeictvyf6polqzgop3jt32owubfmsg3kl226omqrfte4eyidubc4rpq),
+    CID(bafyreihcsxqhd6agqpboc3wrlvpy5bwuxctv5upicdnt3u2wojv4exxl24),
+    CID(bafyreiasq7d2ihbqm5xvhjjzlmzsensuadrpmpt2tkjsuwq42xpa34qevu)
+  ]
+  */
+  ```
+
+</details>
+
+The root node is limited to 4MB in size (the largest message IPFS will bitswap). Depending on the settings used to construct the DAG in the CAR, this may mean a split CAR size limit of around 30GiB.
 
 ### CLI
 
