@@ -1,9 +1,12 @@
 import test from 'ava'
 import { CarReader } from '@ipld/car'
 import * as dagCbor from '@ipld/dag-cbor'
+import { CID } from 'multiformats/cid'
 import { bytesEqual, collect, collectBytes, randomCar, toAsyncIterable } from './_helpers.js'
 import { CarSplitter } from '../index.js'
 import { RootedCarSplitter } from '../rooted/index.js'
+
+const empty = CID.parse('bafkqaaa')
 
 test('split in ~two', async t => {
   const targetSize = 500
@@ -34,7 +37,7 @@ test('target size bigger than file size', async t => {
   t.true(bytesEqual(bytes, await collectBytes(cars[0])))
 })
 
-test('only roots in first car', async t => {
+test('roots in first CAR, empty CID root in other CARs', async t => {
   const targetSize = 100
   const bytes = await collectBytes(await randomCar(1000))
   const splitter = new CarSplitter(toAsyncIterable([bytes]), targetSize)
@@ -45,7 +48,8 @@ test('only roots in first car', async t => {
     if (i === 0) {
       t.true(roots.length > 0)
     } else {
-      t.is(roots.length, 0)
+      t.is(roots.length, 1)
+      t.true(empty.equals(roots[0]))
     }
     i++
   }

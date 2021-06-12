@@ -24,11 +24,12 @@ const splitter = new CarSplitter(bigCar, targetSize)
 
 for await (const car of splitter.cars()) {
   // Each `car` is an AsyncIterable<Uint8Array>
-  // ⚠️ Note: only the first CAR output has roots in the header!
 }
 ```
 
-Some CAR implementations require a **single root CID in the header** of a CAR file. To generate a root node for each split CAR, use the `RootedCarSplitter` constructor. When reading/extracting data from the CARs, the root node should be discarded.
+⚠️ Note: The first CAR output has roots in the header, subsequent CARs have an empty root CID [`bafkqaaa`](https://cid.ipfs.io/#bafkqaaa).
+
+Instead of an empty CID, carbites can generate a special root node for each split CAR that references all the blocks _and_ the original roots (only in the first CAR). To do this, use the `RootedCarSplitter` constructor. When reading/extracting data from the CARs, the root node should be discarded.
 
 ```js
 import { RootedCarSplitter } from 'carbites/rooted'

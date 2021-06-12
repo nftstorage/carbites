@@ -17,7 +17,7 @@ async function split (argv) {
 
       Options
         --size, -s    Target size in bytes to chunk CARs to (default 1KB).
-        --rooted, -r  Create a single root node in every CAR (default false).
+        --rooted, -r  Create a root node in every CAR referencing all bloocks and roots (default false).
     `,
     flags: {
       size: {
