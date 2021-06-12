@@ -3,7 +3,7 @@
 [![Build](https://github.com/alanshaw/carbites/actions/workflows/main.yml/badge.svg)](https://github.com/alanshaw/carbites/actions/workflows/main.yml)
 [![dependencies Status](https://status.david-dm.org/gh/alanshaw/carbites.svg)](https://david-dm.org/alanshaw/carbites)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
-![npm bundle size](https://img.shields.io/bundlephobia/minzip/carbites)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/carbites)](https://bundlephobia.com/package/carbites)
 
 Chunking for CAR files. Split a single CAR into multiple CARs.
 
