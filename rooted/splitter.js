@@ -24,7 +24,7 @@ export class RootedCarSplitter extends CarSplitter {
       }
       const root = await mkRootNode(first ? roots : [], blocks.map(b => b.cid))
       const { writer, out } = CarWriter.create(root.cid)
-      Object.assign(out, { version: 1, getRoots: async () => [root] })
+      Object.assign(out, { version: 1, getRoots: async () => [root.cid] })
       writer.put(root)
       blocks.forEach(b => writer.put(b))
       writer.close()
