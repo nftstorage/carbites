@@ -16,5 +16,5 @@ export class CarSplitter {
    * [blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob) of CAR file
    * data.
    */
-  static fromBlob(blob: Blob): CarSplitter
+  static fromBlob(blob: Blob, targetSize: number): CarSplitter
 }

@@ -5,5 +5,5 @@ export class RootedCarSplitter extends CarSplitter {
    * [blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob) of CAR file
    * data.
    */
-  static fromBlob(blob: Blob): RootedCarSplitter
+  static fromBlob(blob: Blob, targetSize: number): RootedCarSplitter
 }
