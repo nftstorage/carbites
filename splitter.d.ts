@@ -11,4 +11,10 @@ export class CarSplitter {
    * Chunk the CAR into multiple CAR files of around targetSize bytes.
    */
   cars (): AsyncGenerator<AsyncIterable<Uint8Array> & RootsReader>
+  /**
+   * Convenience function to create a new `CarSplitter` from a
+   * [blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob) of CAR file
+   * data.
+   */
+  static fromBlob(blob: Blob): CarSplitter
 }
