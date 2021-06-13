@@ -1,3 +1,5 @@
+import { RootsReader } from '@ipld/car/api'
+
 export class CarSplitter {
   /**
    * Create a new CAR file splitter.
@@ -8,5 +10,5 @@ export class CarSplitter {
   /**
    * Chunk the CAR into multiple CAR files of around targetSize bytes.
    */
-  cars (): AsyncGenerator<AsyncIterable<Uint8Array>>
+  cars (): AsyncGenerator<AsyncIterable<Uint8Array> & RootsReader>
 }

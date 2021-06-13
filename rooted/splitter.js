@@ -1,6 +1,6 @@
 import { CarBlockIterator, CarWriter } from '@ipld/car'
 import { mkRootNode } from './root-node.js'
-import { CarSplitter } from '../splitter.js'
+import { CarSplitter, streamToIterable } from '../splitter.js'
 
 export class RootedCarSplitter extends CarSplitter {
   async * cars () {
@@ -24,6 +24,7 @@ export class RootedCarSplitter extends CarSplitter {
       }
       const root = await mkRootNode(first ? roots : [], blocks.map(b => b.cid))
       const { writer, out } = CarWriter.create(root.cid)
+      Object.assign(out, { version: 1, getRoots: async () => [root] })
       writer.put(root)
       blocks.forEach(b => writer.put(b))
       writer.close()
@@ -32,5 +33,13 @@ export class RootedCarSplitter extends CarSplitter {
       size = 0
       first = false
     }
+  }
+
+  /**
+   * @param {Blob} blob
+   * @param {number} targetSize
+   */
+  static fromBlob (blob, targetSize) {
+    return new RootedCarSplitter(streamToIterable(blob.stream()), targetSize)
   }
 }

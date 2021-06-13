@@ -96,6 +96,7 @@ carbites join big-0.car big-1.car ...
 * [`class CarSplitter`](#class-carsplitter)
     * [`constructor(car: AsyncIterable<Uint8Array>, targetSize: number)`](#constructorcar-asynciterableuint8array-targetsize-number)
     * [`cars(): AsyncGenerator<AsyncIterable<Uint8Array>>`](#cars-asyncgeneratorasynciterableuint8array)
+    * [`static fromBlob(blob): CarSplitter`](#static-fromblobblob-carsplitter)
 * [`class CarJoiner`](#class-carjoiner)
     * [`constructor(cars: Iterable<AsyncIterable<Uint8Array>>)`](#constructorcars-iterableasynciterableuint8array)
     * [`car(): AsyncGenerator<Uint8Array>`](#car-asyncgeneratoruint8array)
@@ -126,6 +127,10 @@ Create a new `CarSplitter` for the passed CAR file, aiming to generate CARs of a
 
 Split the CAR file and create multiple smaller CAR files. Returns an `AsyncGenerator` that yields the split CAR files (of type `AsyncIterable<Uint8Array>`).
 
+#### `static fromBlob(blob): CarSplitter`
+
+Convenience function to create a new `CarSplitter` from a [blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob) of CAR file data.
+
 ### `class CarJoiner`
 
 Join together split CAR files into a single big CAR.
@@ -152,9 +157,7 @@ Join the CAR files together and return the joined CAR.
 
 ### `class RootedCarSplitter`
 
-Split a CAR file into several smaller CAR files ensuring every CAR file contains a single root node.
-
-Some CAR implementations require a single root CID in the header of a CAR file. When reading/extracting data from the CARs, the root node should be discarded.
+Split a CAR file into several smaller CAR files ensuring every CAR file contains a single root node that references all the blocks _and_ the original roots (only in the first CAR). When reading/extracting data from the CARs, the root node should be discarded.
 
 Import in the browser:
 

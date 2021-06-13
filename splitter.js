@@ -31,7 +31,7 @@ export class CarSplitter {
   async * cars () {
     const reader = await CarBlockIterator.fromIterable(this._car)
     const allBlocks = reader[Symbol.asyncIterator]()
-    const roots = await reader.getRoots()
+    const originRoots = await reader.getRoots()
     let blocks = []
     let size = 0
     let first = true
@@ -47,7 +47,9 @@ export class CarSplitter {
         blocks.push(block)
         size += block.bytes.length
       }
-      const { writer, out } = CarWriter.create(first ? roots : [empty])
+      const roots = first ? originRoots : [empty]
+      const { writer, out } = CarWriter.create(roots)
+      Object.assign(out, { version: 1, getRoots: async () => roots })
       blocks.forEach(b => writer.put(b))
       writer.close()
       yield out
@@ -55,5 +57,29 @@ export class CarSplitter {
       size = 0
       first = false
     }
+  }
+
+  /**
+   * @param {Blob} blob
+   * @param {number} targetSize
+   */
+  static fromBlob (blob, targetSize) {
+    return new CarSplitter(streamToIterable(blob.stream()), targetSize)
+  }
+}
+
+/**
+ * @param {ReadableStream} readable
+ */
+export async function * streamToIterable (readable) {
+  const reader = readable.getReader()
+  try {
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) return
+      yield value
+    }
+  } finally {
+    reader.releaseLock()
   }
 }
