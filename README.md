@@ -95,7 +95,7 @@ carbites join big-0.car big-1.car ...
 
 * [`class CarSplitter`](#class-carsplitter)
     * [`constructor(car: AsyncIterable<Uint8Array>, targetSize: number)`](#constructorcar-asynciterableuint8array-targetsize-number)
-    * [`cars(): AsyncGenerator<AsyncIterable<Uint8Array>>`](#cars-asyncgeneratorasynciterableuint8array)
+    * [`cars(): AsyncGenerator<AsyncIterable<Uint8Array> & RootsReader>`](#cars-asyncgeneratorasynciterableuint8array-rootsreader)
     * [`static fromBlob(blob): CarSplitter`](#static-fromblobblob-carsplitter)
 * [`class CarJoiner`](#class-carjoiner)
     * [`constructor(cars: Iterable<AsyncIterable<Uint8Array>>)`](#constructorcars-iterableasynciterableuint8array)
@@ -123,9 +123,11 @@ import { CarSplitter } from 'carbites'
 
 Create a new `CarSplitter` for the passed CAR file, aiming to generate CARs of around `targetSize` bytes in size.
 
-#### `cars(): AsyncGenerator<AsyncIterable<Uint8Array>>`
+#### `cars(): AsyncGenerator<AsyncIterable<Uint8Array> & RootsReader>`
 
 Split the CAR file and create multiple smaller CAR files. Returns an `AsyncGenerator` that yields the split CAR files (of type `AsyncIterable<Uint8Array>`).
+
+The CAR files output also implement the [`RootsReader`](https://github.com/ipld/js-car/blob/8c74dc3c7273213b83f4610e4f88cf1ad2830fa6/api.ts#L18-L21) interface from `@ipld/car` which means you can call `getRoots(): Promise<CID[]>` to obtain the root CIDs.
 
 #### `static fromBlob(blob): CarSplitter`
 
