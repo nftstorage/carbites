@@ -135,7 +135,8 @@ carbites join big-0.car big-1.car ...
 * [`class CarSplitter`](#class-carsplitter)
     * [`constructor(car: AsyncIterable<Uint8Array>, targetSize: number)`](#constructorcar-asynciterableuint8array-targetsize-number)
     * [`cars(): AsyncGenerator<AsyncIterable<Uint8Array> & RootsReader>`](#cars-asyncgeneratorasynciterableuint8array--rootsreader)
-    * [`static fromBlob(blob): CarSplitter`](#static-fromblobblob-carsplitter)
+    * [`static async fromBlob(blob: Blob, targetSize: number): CarSplitter`](#static-async-fromblobblob-blob-targetsize-number-carsplitter)
+    * [`static async fromIterable(iterable: AsyncIterable<Uint8Array>, targetSize: number): CarSplitter`](#static-async-fromiterableiterable-asynciterableuint8array-targetsize-number-carsplitter)
 * [`class CarJoiner`](#class-carjoiner)
     * [`constructor(cars: Iterable<AsyncIterable<Uint8Array>>)`](#constructorcars-iterableasynciterableuint8array)
     * [`car(): AsyncGenerator<Uint8Array>`](#car-asyncgeneratoruint8array)
@@ -162,7 +163,7 @@ import { CarSplitter } from 'carbites'
 
 Note: This is an alias of `SimpleCarSplitter` - the default strategy for splitting CARs.
 
-#### `constructor(car: AsyncIterable<Uint8Array>, targetSize: number)`
+#### `constructor(car: CarReader, targetSize: number)`
 
 Create a new `CarSplitter` for the passed CAR file, aiming to generate CARs of around `targetSize` bytes in size.
 
@@ -172,9 +173,13 @@ Split the CAR file and create multiple smaller CAR files. Returns an `AsyncGener
 
 The CAR files output also implement the [`RootsReader`](https://github.com/ipld/js-car/blob/8c74dc3c7273213b83f4610e4f88cf1ad2830fa6/api.ts#L18-L21) interface from `@ipld/car` which means you can call `getRoots(): Promise<CID[]>` to obtain the root CIDs.
 
-#### `static fromBlob(blob): CarSplitter`
+#### `static async fromBlob(blob: Blob, targetSize: number): CarSplitter`
 
 Convenience function to create a new `CarSplitter` from a [blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob) of CAR file data.
+
+#### `static async fromIterable(iterable: AsyncIterable<Uint8Array>, targetSize: number): CarSplitter`
+
+Convenience function to create a new `CarSplitter` from an `AsyncIterable<Uint8Array>` of CAR file data.
 
 ### `class CarJoiner`
 
@@ -194,7 +199,7 @@ import { CarJoiner } from 'carbites'
 
 Note: This is an alias of `SimpleCarJoiner` - a joiner for the the default CAR splitting strategy.
 
-#### `constructor(cars: Iterable<AsyncIterable<Uint8Array>>)`
+#### `constructor(cars: Iterable<CarReader>)`
 
 Create a new `CarJoiner`  for joining the passed CAR files together.
 
