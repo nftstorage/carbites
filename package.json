@@ -8,7 +8,7 @@
     "carbites": "bin/carbites.js"
   },
   "scripts": {
-    "test": "ava --verbose",
+    "test": "ava --verbose '**/*.spec.js'",
     "coverage": "c8 npm run test",
     "lint": "standard"
   },
@@ -17,6 +17,7 @@
   "dependencies": {
     "@ipld/car": "^3.0.1",
     "@ipld/dag-cbor": "^6.0.3",
+    "@ipld/dag-pb": "^2.0.2",
     "bytes": "^3.1.0",
     "meow": "^10.0.1",
     "multiformats": "^9.0.2"

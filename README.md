@@ -15,13 +15,22 @@ npm install carbites
 
 ## Usage
 
+Carbites supports 3 different strategies:
+
+1. [**Simple**](#simple) (default) - fast but naive, only the first CAR output has a root CID, subsequent CARs have a placeholder "empty" CID.
+2. [**Rooted**](#rooted) - like simple, but creates a custom root node to ensure all blocks in a CAR are referenced.
+3. [**Treewalk**](#treewalk) - walks the DAG to pack sub-graphs into each CAR file that is output. Every CAR has the same root CID, but contains a different portion of the DAG.
+
+### Simple
+
 ```js
 import { CarSplitter } from 'carbites'
+import { CarReader } from '@ipld/car'
 import fs from 'fs'
 
-const bigCar = fs.createReadStream('/path/to/big.car')
+const bigCar = await CarReader.fromIterable(fs.createReadStream('/path/to/big.car'))
 const targetSize = 1024 * 1024 * 100 // chunk to ~100MB CARs
-const splitter = new CarSplitter(bigCar, targetSize)
+const splitter = new CarSplitter(bigCar, targetSize) // (simple strategy)
 
 for await (const car of splitter.cars()) {
   // Each `car` is an AsyncIterable<Uint8Array>
@@ -29,6 +38,8 @@ for await (const car of splitter.cars()) {
 ```
 
 ⚠️ Note: The first CAR output has roots in the header, subsequent CARs have an empty root CID [`bafkqaaa`](https://cid.ipfs.io/#bafkqaaa) as [recommended](https://github.com/ipld/specs/blob/master/block-layer/content-addressable-archives.md#number-of-roots).
+
+### Rooted
 
 Instead of an empty CID, carbites can generate a special root node for each split CAR that references all the blocks _and_ the original roots (only in the first CAR). To do this, use the `RootedCarSplitter` constructor. When reading/extracting data from the CARs, the root node should be discarded.
 
@@ -41,11 +52,11 @@ Instead of an empty CID, carbites can generate a special root node for each spli
   import * as dagCbor from '@ipld/dag-cbor'
   import fs from 'fs'
 
-  const bigCar = fs.createReadStream('/path/to/big.car')
+  const bigCar = await CarReader.fromIterable(fs.createReadStream('/path/to/big.car'))
   const targetSize = 1024 * 1024 * 100 // chunk to ~100MB CARs
-  const chunker = new RootedCarSplitter(bigCar, targetSize)
+  const splitter = new RootedCarSplitter(bigCar, targetSize)
 
-  const cars = chunker.cars()
+  const cars = splitter.cars()
 
   // Every CAR has a single root - a CBOR node that is an tuple of `/carbites/1`,
   // an array of root CIDs and an array of block CIDs.
@@ -77,13 +88,41 @@ Instead of an empty CID, carbites can generate a special root node for each spli
 
 The root node is limited to 4MB in size (the largest message IPFS will bitswap). Depending on the settings used to construct the DAG in the CAR, this may mean a split CAR size limit of around 30GiB.
 
+### Treewalk
+
+Every CAR file has the _same_ root CID but a different portion of the DAG. The DAG is traversed from the root node and each block is decoded and links extracted in order to determine which sub-graph to include in each CAR.
+
+<details>
+  <summary>Example</summary>
+
+  ```js
+  import { TreewalkCarSplitter } from 'carbites/treewalk'
+  import { CarReader } from '@ipld/car/reader'
+  import * as dagCbor from '@ipld/dag-cbor'
+  import fs from 'fs'
+
+  const bigCar = await CarReader.fromIterable(fs.createReadStream('/path/to/big.car'))
+  const [rootCid] = await bigCar.getRoots()
+  const targetSize = 1024 * 1024 * 100 // chunk to ~100MB CARs
+  const splitter = new TreewalkCarSplitter(bigCar, targetSize)
+
+  for await (const car of splitter.cars()) {
+    // Each `car` is an AsyncIterable<Uint8Array>
+    const reader = await CarReader.fromIterable(car)
+    const [splitCarRootCid] = await reader.getRoots()
+    console.assert(rootCid.equals(splitCarRootCid)) // all cars will have the same root
+  }
+  ```
+
+</details>
+
 ### CLI
 
 ```sh
 npm i -g carbites
 
 # Split a big CAR into many smaller CARs
-carbites split big.car --size 100MB # (default size)
+carbites split big.car --size 100MB --strategy simple # (default size & strategy)
 
 # Join many split CARs back into a single CAR.
 carbites join big-0.car big-1.car ...
@@ -102,6 +141,8 @@ carbites join big-0.car big-1.car ...
     * [`car(): AsyncGenerator<Uint8Array>`](#car-asyncgeneratoruint8array)
 * [`class RootedCarSplitter`](#class-rootedcarsplitter)
 * [`class RootedCarJoiner`](#class-rootedcarjoiner)
+* [`class TreewalkCarSplitter`](#class-treewalkcarsplitter)
+* [`class TreewalkCarJoiner`](#class-treewalkcarjoiner)
 
 ### `class CarSplitter`
 
@@ -118,6 +159,8 @@ Import in Node.js:
 ```js
 import { CarSplitter } from 'carbites'
 ```
+
+Note: This is an alias of `SimpleCarSplitter` - the default strategy for splitting CARs.
 
 #### `constructor(car: AsyncIterable<Uint8Array>, targetSize: number)`
 
@@ -148,6 +191,8 @@ Import in Node.js:
 ```js
 import { CarJoiner } from 'carbites'
 ```
+
+Note: This is an alias of `SimpleCarJoiner` - a joiner for the the default CAR splitting strategy.
 
 #### `constructor(cars: Iterable<AsyncIterable<Uint8Array>>)`
 
@@ -184,6 +229,32 @@ Note: The root node is limited to 4MB in size (the largest message IPFS will bit
 ### `class RootedCarJoiner`
 
 Join together CAR files that were split using [`RootedCarSplitter`](#class-rootedcarsplitter).
+
+The API is the same as for [`CarJoiner`](#class-carjoiner).
+
+### `class TreewalkCarSplitter`
+
+Split a CAR file into several smaller CAR files. Every CAR file has the _same_ root CID but a different portion of the DAG. The DAG is traversed from the root node and each block is decoded and links extracted in order to determine which sub-graph to include in each CAR.
+
+This strategy has a _significant_ speed overhead.
+
+Import in the browser:
+
+```js
+import { TreewalkCarSplitter } from 'https://cdn.skypack.dev/carbites/treewalk'
+```
+
+Import in Node.js:
+
+```js
+import { TreewalkCarSplitter } from 'carbites/treewalk'
+```
+
+The API is the same as for [`CarSplitter`](#class-carsplitter).
+
+### `class TreewalkCarJoiner`
+
+Join together CAR files that were split using [`TreewalkCarSplitter`](#class-treewalkcarsplitter).
 
 The API is the same as for [`CarJoiner`](#class-carjoiner).
 

@@ -1,2 +1,2 @@
-export * from './splitter.js'
-export * from './joiner.js'
+export { SimpleCarSplitter as CarSplitter } from './simple/splitter.js'
+export { SimpleCarJoiner as CarJoiner } from './simple/joiner.js'

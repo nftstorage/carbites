@@ -1,12 +1,11 @@
-import { CarBlockIterator, CarWriter } from '@ipld/car'
+import { CarReader, CarWriter } from '@ipld/car'
 import { mkRootNode } from './root-node.js'
-import { CarSplitter, streamToIterable } from '../splitter.js'
+import { SimpleCarSplitter } from '../simple/splitter.js'
 
-export class RootedCarSplitter extends CarSplitter {
+export class RootedCarSplitter extends SimpleCarSplitter {
   async * cars () {
-    const reader = await CarBlockIterator.fromIterable(this._car)
-    const allBlocks = reader[Symbol.asyncIterator]()
-    const roots = await reader.getRoots()
+    const allBlocks = this._reader.blocks()
+    const roots = await this._reader.getRoots()
     let blocks = []
     let size = 0
     let first = true
@@ -39,7 +38,18 @@ export class RootedCarSplitter extends CarSplitter {
    * @param {Blob} blob
    * @param {number} targetSize
    */
-  static fromBlob (blob, targetSize) {
-    return new RootedCarSplitter(streamToIterable(blob.stream()), targetSize)
+  static async fromBlob (blob, targetSize) {
+    const buffer = await blob.arrayBuffer()
+    const reader = await CarReader.fromBytes(new Uint8Array(buffer))
+    return new RootedCarSplitter(reader, targetSize)
+  }
+
+  /**
+   * @param {AsyncIterable<Uint8Array>} iterable
+   * @param {number} targetSize
+   */
+  static async fromIterable (iterable, targetSize) {
+    const reader = await CarReader.fromIterable(iterable)
+    return new RootedCarSplitter(reader, targetSize)
   }
 }

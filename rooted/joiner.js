@@ -1,13 +1,12 @@
-import { CarReader, CarWriter } from '@ipld/car'
+import { CarWriter } from '@ipld/car'
 import { decode, code } from '@ipld/dag-cbor'
 import { Block } from 'multiformats/block'
 import { isRootNode } from './root-node.js'
-import { CarJoiner } from '../joiner.js'
+import { SimpleCarJoiner } from '../simple/joiner.js'
 
-export class RootedCarJoiner extends CarJoiner {
+export class RootedCarJoiner extends SimpleCarJoiner {
   async * car () {
-    const firstCar = this._cars[0]
-    const reader = await CarReader.fromIterable(firstCar)
+    const reader = this._cars[0]
     const rblk = await getRootedBlock(reader)
     const roots = rblk.value[1]
     const { writer, out } = CarWriter.create(roots)
@@ -16,8 +15,7 @@ export class RootedCarJoiner extends CarJoiner {
         for await (const b of filterBlock(rblk.cid, reader)) {
           await writer.put(b)
         }
-        for (const c of this._cars.slice(1)) {
-          const reader = await CarReader.fromIterable(c)
+        for (const reader of this._cars.slice(1)) {
           const rblk = await getRootedBlock(reader)
           for await (const b of filterBlock(rblk.cid, reader)) {
             await writer.put(b)

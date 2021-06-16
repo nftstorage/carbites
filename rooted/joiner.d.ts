@@ -1,2 +1,3 @@
-import { CarJoiner } from '../joiner.js'
-export class RootedCarJoiner extends CarJoiner {}
+import { SimpleCarJoiner } from '../simple/joiner.js'
+
+export class RootedCarJoiner extends SimpleCarJoiner {}

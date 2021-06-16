@@ -4,8 +4,10 @@ import meow from 'meow'
 import fs from 'fs'
 import { pipeline } from 'stream/promises'
 import bytes from 'bytes'
-import { CarSplitter, CarJoiner } from '../index.js'
+import { CarIndexedReader, CarReader } from '@ipld/car'
+import { SimpleCarSplitter, SimpleCarJoiner } from '../simple/index.js'
 import { RootedCarSplitter, RootedCarJoiner } from '../rooted/index.js'
+import { TreewalkCarSplitter, TreewalkCarJoiner } from '../treewalk/index.js'
 
 async function split (argv) {
   const cli = meow({
@@ -16,8 +18,8 @@ async function split (argv) {
         $ carbites split <filename>
 
       Options
-        --size, -s    Target size in bytes to chunk CARs to (default 1KB).
-        --rooted, -r  Create a root node in every CAR referencing all bloocks and roots (default false).
+        --size,     -s  Target size in bytes to chunk CARs to (default 1KB).
+        --strategy, -t  Strategy for splitting CAR files "simple", "rooted" or "treewalk" (default simple).
     `,
     flags: {
       size: {
@@ -25,10 +27,10 @@ async function split (argv) {
         alias: 's',
         default: '100MB'
       },
-      rooted: {
-        type: 'boolean',
-        alias: 'r',
-        default: false
+      strategy: {
+        type: 'string',
+        alias: 't',
+        default: 'simple'
       }
     }
   })
@@ -37,14 +39,19 @@ async function split (argv) {
     return cli.showHelp()
   }
 
-  const input = fs.createReadStream(cli.input[0])
+  // const input = await CarIndexedReader.fromFile(cli.input[0])
+  const input = await CarReader.fromIterable(fs.createReadStream(cli.input[0]))
   const name = cli.input[0].replace('.car', '')
   const size = bytes.parse(cli.flags.size)
 
-  const splitter = cli.flags.rooted
-    ? new RootedCarSplitter(input, size)
-    : new CarSplitter(input, size)
+  let CarSplitter = SimpleCarSplitter
+  if (cli.flags.strategy === 'treewalk') {
+    CarSplitter = TreewalkCarSplitter
+  } else if (cli.flags.strategy === 'rooted') {
+    CarSplitter = RootedCarSplitter
+  }
 
+  const splitter = new CarSplitter(input, size)
   let i = 0
   for await (const car of splitter.cars()) {
     await pipeline(car, fs.createWriteStream(`${name}-${i}.car`))
@@ -61,14 +68,14 @@ async function join (argv) {
         $ carbites join <filename> [...filename]
 
       Options
-        --output, -o  Output path for resulting CAR.
-        --rooted, -r  CAR files all contain a carbites root node (default false).
+        --output,   -o  Output path for resulting CAR.
+        --strategy, -t  Strategy for splitting CAR files "simple", "rooted" or "treewalk" (default simple).
     `,
     flags: {
-      rooted: {
-        type: 'boolean',
-        alias: 'r',
-        default: false
+      simple: {
+        type: 'string',
+        alias: 't',
+        default: 'simple'
       },
       output: {
         type: 'string',
@@ -82,11 +89,16 @@ async function join (argv) {
     return cli.showHelp()
   }
 
-  const cars = cli.input.map(p => fs.createReadStream(p))
+  const cars = await Promise.all(cli.input.map(p => CarIndexedReader.fromFile(p)))
 
-  const joiner = cli.flags.rooted
-    ? new RootedCarJoiner(cars)
-    : new CarJoiner(cars)
+  let CarJoiner = SimpleCarJoiner
+  if (cli.flags.strategy === 'treewalk') {
+    CarJoiner = TreewalkCarJoiner
+  } else if (cli.flags.strategy === 'rooted') {
+    CarJoiner = RootedCarJoiner
+  }
+
+  const joiner = new CarJoiner(cars)
 
   await pipeline(joiner.car(), fs.createWriteStream(cli.flags.output))
 }

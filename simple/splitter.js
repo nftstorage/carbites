@@ -1,4 +1,4 @@
-import { CarBlockIterator, CarWriter } from '@ipld/car'
+import { CarReader, CarWriter } from '@ipld/car'
 import { CID } from 'multiformats/cid'
 
 /**
@@ -15,23 +15,22 @@ import { CID } from 'multiformats/cid'
  */
 const empty = CID.parse('bafkqaaa')
 
-export class CarSplitter {
+export class SimpleCarSplitter {
   /**
-   * @param {AsyncIterable<Uint8Array>} car
+   * @param {CarReader} reader
    * @param {number} targetSize
    */
-  constructor (car, targetSize) {
+  constructor (reader, targetSize) {
     if (typeof targetSize !== 'number' || targetSize <= 0) {
       throw new Error('invalid target chunk size')
     }
-    this._car = car
+    this._reader = reader
     this._targetSize = targetSize
   }
 
   async * cars () {
-    const reader = await CarBlockIterator.fromIterable(this._car)
-    const allBlocks = reader[Symbol.asyncIterator]()
-    const originRoots = await reader.getRoots()
+    const allBlocks = this._reader.blocks()
+    const originRoots = await this._reader.getRoots()
     let blocks = []
     let size = 0
     let first = true
@@ -63,23 +62,18 @@ export class CarSplitter {
    * @param {Blob} blob
    * @param {number} targetSize
    */
-  static fromBlob (blob, targetSize) {
-    return new CarSplitter(streamToIterable(blob.stream()), targetSize)
+  static async fromBlob (blob, targetSize) {
+    const buffer = await blob.arrayBuffer()
+    const reader = await CarReader.fromBytes(new Uint8Array(buffer))
+    return new SimpleCarSplitter(reader, targetSize)
   }
-}
 
-/**
- * @param {ReadableStream} readable
- */
-export async function * streamToIterable (readable) {
-  const reader = readable.getReader()
-  try {
-    while (true) {
-      const { done, value } = await reader.read()
-      if (done) return
-      yield value
-    }
-  } finally {
-    reader.releaseLock()
+  /**
+   * @param {AsyncIterable<Uint8Array>} iterable
+   * @param {number} targetSize
+   */
+  static async fromIterable (iterable, targetSize) {
+    const reader = await CarReader.fromIterable(iterable)
+    return new SimpleCarSplitter(reader, targetSize)
   }
 }
