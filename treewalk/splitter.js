@@ -79,7 +79,7 @@ export class TreewalkCarSplitter {
           yield val
         }
       }
-    } if (block.cid.code === raw.code) {
+    } else if (block.cid.code === raw.code) {
       // skip
     } else {
       for (const [, cid] of block.links()) {
