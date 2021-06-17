@@ -63,6 +63,15 @@
       "*": [
         "types/*"
       ],
+      "simple": [
+        "types/simple/index.d.ts"
+      ],
+      "rooted": [
+        "types/rooted/index.d.ts"
+      ],
+      "treewalk": [
+        "types/treewalk/index.d.ts"
+      ],
       "types/*": [
         "types/*"
       ]
