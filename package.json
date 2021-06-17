@@ -37,7 +37,8 @@
     "c8": "^7.7.2",
     "ipjs": "^5.0.0",
     "ipld-garbage": "^4.0.1",
-    "standard": "^16.0.3"
+    "standard": "^16.0.3",
+    "typescript": "^4.2.4"
   },
   "standard": {
     "ignore": [
