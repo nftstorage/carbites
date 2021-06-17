@@ -263,7 +263,7 @@ The API is the same as for [`CarJoiner`](#class-carjoiner).
 
 ## Releasing
 
-You can publish by either running `npm publish` in the `dist` directory or using `npm run publish`.
+You can publish by either running `npm publish` in the `dist` directory or using `npx ipjs publish`.
 
 ## Contribute
 

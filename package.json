@@ -17,8 +17,7 @@
     "test:node": "ava --verbose 'test/*.spec.js'",
     "test:cjs": "npm run build:js && ava --verbose dist/cjs/node-test/*.spec.js",
     "coverage": "c8 npm run test",
-    "lint": "standard",
-    "publish": "ipjs publish"
+    "lint": "standard"
   },
   "author": "Alan Shaw",
   "license": "(Apache-2.0 AND MIT)",
