@@ -70,23 +70,10 @@ export class TreewalkCarSplitter {
     channel.size += block.bytes.byteLength
     channel.writer.put(block)
 
-    // TODO: just use block.links() when PR merged/released:
-    // https://github.com/multiformats/js-multiformats/pull/94
-    if (block.cid.code === pb.code) {
-      for (const { Hash } of block.value.Links) {
-        for await (const val of this._cars(Hash, parents, channel)) {
-          channel = val.channel
-          yield val
-        }
-      }
-    } else if (block.cid.code === raw.code) {
-      // skip
-    } else {
-      for (const [, cid] of block.links()) {
-        for await (const val of this._cars(cid, parents, channel)) {
-          channel = val.channel
-          yield val
-        }
+    for (const [, cid] of block.links()) {
+      for await (const val of this._cars(cid, parents, channel)) {
+        channel = val.channel
+        yield val
       }
     }
 

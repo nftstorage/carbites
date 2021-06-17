@@ -20,7 +20,7 @@
     "@ipld/dag-pb": "^2.0.2",
     "bytes": "^3.1.0",
     "meow": "^10.0.1",
-    "multiformats": "^9.0.2"
+    "multiformats": "^9.0.4"
   },
   "devDependencies": {
     "@web-std/blob": "^2.1.0",
