@@ -5,9 +5,9 @@ import fs from 'fs'
 import { pipeline } from 'stream/promises'
 import bytes from 'bytes'
 import { CarIndexedReader, CarReader } from '@ipld/car'
-import { SimpleCarSplitter, SimpleCarJoiner } from '../simple/index.js'
-import { RootedCarSplitter, RootedCarJoiner } from '../rooted/index.js'
-import { TreewalkCarSplitter, TreewalkCarJoiner } from '../treewalk/index.js'
+import { SimpleCarSplitter, SimpleCarJoiner } from '../lib/simple/index.js'
+import { RootedCarSplitter, RootedCarJoiner } from '../lib/rooted/index.js'
+import { TreewalkCarSplitter, TreewalkCarJoiner } from '../lib/treewalk/index.js'
 
 async function split (argv) {
   const cli = meow({

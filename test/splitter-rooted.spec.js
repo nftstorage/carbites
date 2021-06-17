@@ -2,8 +2,8 @@ import test from 'ava'
 import { CarReader } from '@ipld/car'
 import * as dagCbor from '@ipld/dag-cbor'
 import { Blob } from '@web-std/blob'
-import { collect, collectBytes, randomCar } from '../test/_helpers.js'
-import { RootedCarSplitter } from './splitter.js'
+import { collect, collectBytes, randomCar } from './_helpers.js'
+import { RootedCarSplitter } from '../lib/rooted/splitter.js'
 
 test('root nodes', async t => {
   const targetSize = 500

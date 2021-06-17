@@ -1,8 +1,8 @@
 import test from 'ava'
 import { CarReader } from '@ipld/car'
 import { Blob } from '@web-std/blob'
-import { bytesEqual, collect, collectBytes, randomCar, toAsyncIterable } from '../test/_helpers.js'
-import { TreewalkCarSplitter } from './splitter.js'
+import { bytesEqual, collect, collectBytes, randomCar, toAsyncIterable } from './_helpers.js'
+import { TreewalkCarSplitter } from '../lib/treewalk/splitter.js'
 
 test('split in ~two', async t => {
   const targetSize = 500
