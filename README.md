@@ -241,8 +241,6 @@ The API is the same as for [`CarJoiner`](#class-carjoiner).
 
 Split a CAR file into several smaller CAR files. Every CAR file has the _same_ root CID but a different portion of the DAG. The DAG is traversed from the root node and each block is decoded and links extracted in order to determine which sub-graph to include in each CAR.
 
-This strategy has a _significant_ speed overhead.
-
 Import in the browser:
 
 ```js
