@@ -13,13 +13,11 @@
     "build:js": "ipjs build --tests --main && npm run build:copy",
     "build:copy": "cp -a tsconfig.json lib test dist/ ",
     "build:types": "npm run build:copy && cd dist && tsc --build",
-    "prepare": "npm run build",
     "test": "npm run lint && npm run test:node && npm run test:cjs",
     "test:node": "ava --verbose 'test/*.spec.js'",
     "test:cjs": "npm run build:js && ava --verbose dist/cjs/node-test/*.spec.js",
     "coverage": "c8 npm run test",
     "lint": "standard",
-    "prepublishOnly": "npm run build",
     "publish": "ipjs publish"
   },
   "author": "Alan Shaw",
