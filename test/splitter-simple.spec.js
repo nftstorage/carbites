@@ -2,8 +2,8 @@ import test from 'ava'
 import { CarReader } from '@ipld/car'
 import { CID } from 'multiformats/cid'
 import { Blob } from '@web-std/blob'
-import { bytesEqual, collect, collectBytes, randomCar, toAsyncIterable } from '../test/_helpers.js'
-import { SimpleCarSplitter } from './splitter.js'
+import { bytesEqual, collect, collectBytes, randomCar, toAsyncIterable } from './_helpers.js'
+import { SimpleCarSplitter } from '../lib/simple/splitter.js'
 
 const empty = CID.parse('bafkqaaa')
 

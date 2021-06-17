@@ -1,7 +1,7 @@
 import test from 'ava'
 import { CarReader } from '@ipld/car'
-import { bytesEqual, collectBytes, randomCar } from '../test/_helpers.js'
-import { SimpleCarSplitter, SimpleCarJoiner } from './index.js'
+import { bytesEqual, collectBytes, randomCar } from './_helpers.js'
+import { SimpleCarSplitter, SimpleCarJoiner } from '../lib/simple/index.js'
 
 test('joins CARs', async t => {
   const targetSize = 500

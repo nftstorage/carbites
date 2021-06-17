@@ -261,6 +261,10 @@ Join together CAR files that were split using [`TreewalkCarSplitter`](#class-tre
 
 The API is the same as for [`CarJoiner`](#class-carjoiner).
 
+## Releasing
+
+You can publish to by either running npm publish in the dist directory or using `npm run publish`.
+
 ## Contribute
 
 Feel free to dive in! [Open an issue](https://github.com/alanshaw/carbites/issues/new) or submit PRs.

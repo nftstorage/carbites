@@ -2,15 +2,24 @@
   "name": "carbites",
   "version": "0.7.4",
   "description": "Chunking for CAR files. Split a single CAR into multiple CARs.",
-  "main": "index.js",
+  "main": "lib/index.js",
   "type": "module",
   "bin": {
     "carbites": "bin/carbites.js"
   },
   "scripts": {
-    "test": "ava --verbose '**/*.spec.js'",
+    "build": "npm run build:js && npm run build:types",
+    "build:js": "ipjs build --tests --main && npm run build:copy",
+    "build:copy": "cp -a tsconfig.json lib test dist/ ",
+    "build:types": "npm run build:copy && cd dist && tsc --build",
+    "prepare": "npm run build",
+    "test": "npm run lint && npm run test:node && npm run test:cjs",
+    "test:node": "ava --verbose 'test/*.spec.js'",
+    "test:cjs": "npm run build:js && ava --verbose dist/cjs/node-test/*.spec.js",
     "coverage": "c8 npm run test",
-    "lint": "standard"
+    "lint": "standard",
+    "prepublishOnly": "npm run build",
+    "publish": "ipjs publish"
   },
   "author": "Alan Shaw",
   "license": "(Apache-2.0 AND MIT)",
@@ -26,13 +35,38 @@
     "@web-std/blob": "^2.1.0",
     "ava": "^3.15.0",
     "c8": "^7.7.2",
+    "ipjs": "^5.0.0",
     "ipld-garbage": "^4.0.1",
     "standard": "^16.0.3"
   },
   "standard": {
     "ignore": [
-      "*.d.ts"
+      "dist"
     ]
+  },
+  "exports": {
+    ".": {
+      "import": "./lib/index.js"
+    },
+    "./rooted": {
+      "import": "./lib/rooted/index.js"
+    },
+    "./simple": {
+      "import": "./lib/simple/index.js"
+    },
+    "./treewalk": {
+      "import": "./lib/treewalk/index.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "types/*"
+      ],
+      "types/*": [
+        "types/*"
+      ]
+    }
   },
   "repository": {
     "type": "git",
