@@ -1,8 +1,19 @@
 import test from 'ava'
-import { CarReader } from '@ipld/car'
+import { CarReader, CarWriter } from '@ipld/car'
 import { Blob } from '@web-std/blob'
+import { Block } from 'multiformats/block'
+import { sha256 } from 'multiformats/hashes/sha2'
+import { CID } from 'multiformats/cid'
+import * as dagCbor from '@ipld/dag-cbor'
 import { bytesEqual, collect, collectBytes, randomCar, toAsyncIterable } from './_helpers.js'
 import { TreewalkCarSplitter } from '../lib/treewalk/splitter.js'
+
+const newBlock = async data => {
+  const bytes = dagCbor.encode(data)
+  const hash = await sha256.digest(bytes)
+  const cid = CID.create(1, dagCbor.code, hash)
+  return new Block({ cid, bytes, value: data })
+}
 
 test('split in ~two', async t => {
   const targetSize = 500
@@ -91,4 +102,29 @@ test('fromIterable', async t => {
     }
   }
   t.is(blocks.length, chunkedBlocks.size)
+})
+
+test('zero roots', async t => {
+  const targetSize = 500
+  const channel = CarWriter.create([])
+  channel.writer.put(await newBlock(Math.random()))
+  channel.writer.close()
+
+  const splitter = await TreewalkCarSplitter.fromIterable(channel.out, targetSize)
+  await t.throwsAsync(() => splitter.cars().next(), { message: 'unexpected number of roots: 0' })
+})
+
+test('multiple roots', async t => {
+  const targetSize = 500
+  const blocks = await Promise.all([
+    newBlock('0:' + Math.random()),
+    newBlock('1:' + Math.random()),
+    newBlock('2:' + Math.random())
+  ])
+  const channel = CarWriter.create(blocks.map(b => b.cid))
+  blocks.forEach(b => channel.writer.put(b))
+  channel.writer.close()
+
+  const splitter = await TreewalkCarSplitter.fromIterable(channel.out, targetSize)
+  await t.throwsAsync(() => splitter.cars().next(), { message: `unexpected number of roots: ${blocks.length}` })
 })
