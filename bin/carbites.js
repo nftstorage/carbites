@@ -4,7 +4,7 @@ import meow from 'meow'
 import fs from 'fs'
 import { pipeline } from 'stream/promises'
 import bytes from 'bytes'
-import { CarIndexedReader, CarReader } from '@ipld/car'
+import { CarIndexedReader } from '@ipld/car'
 import { SimpleCarSplitter, SimpleCarJoiner } from '../lib/simple/index.js'
 import { RootedCarSplitter, RootedCarJoiner } from '../lib/rooted/index.js'
 import { TreewalkCarSplitter, TreewalkCarJoiner } from '../lib/treewalk/index.js'
@@ -39,8 +39,8 @@ async function split (argv) {
     return cli.showHelp()
   }
 
-  // const input = await CarIndexedReader.fromFile(cli.input[0])
-  const input = await CarReader.fromIterable(fs.createReadStream(cli.input[0]))
+  const input = await CarIndexedReader.fromFile(cli.input[0])
+  // const input = await CarReader.fromIterable(fs.createReadStream(cli.input[0]))
   const name = cli.input[0].replace('.car', '')
   const size = bytes.parse(cli.flags.size)
 
