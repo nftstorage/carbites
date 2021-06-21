@@ -1,7 +1,7 @@
 # carbites
 
-[![Build](https://github.com/alanshaw/carbites/actions/workflows/main.yml/badge.svg)](https://github.com/alanshaw/carbites/actions/workflows/main.yml)
-[![dependencies Status](https://status.david-dm.org/gh/alanshaw/carbites.svg)](https://david-dm.org/alanshaw/carbites)
+[![Build](https://github.com/nftstorage/carbites/actions/workflows/main.yml/badge.svg)](https://github.com/nftstorage/carbites/actions/workflows/main.yml)
+[![dependencies Status](https://status.david-dm.org/gh/nftstorage/carbites.svg)](https://david-dm.org/nftstorage/carbites)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/carbites)](https://bundlephobia.com/package/carbites)
 
@@ -267,8 +267,8 @@ You can publish by either running `npm publish` in the `dist` directory or using
 
 ## Contribute
 
-Feel free to dive in! [Open an issue](https://github.com/alanshaw/carbites/issues/new) or submit PRs.
+Feel free to dive in! [Open an issue](https://github.com/nftstorage/carbites/issues/new) or submit PRs.
 
 ## License
 
-Dual-licensed under [MIT](https://github.com/alanshaw/carbites/blob/main/LICENSE-MIT) + [Apache 2.0](https://github.com/alanshaw/carbites/blob/main/LICENSE-APACHE)
+Dual-licensed under [MIT](https://github.com/nftstorage/carbites/blob/main/LICENSE-MIT) + [Apache 2.0](https://github.com/nftstorage/carbites/blob/main/LICENSE-APACHE)
