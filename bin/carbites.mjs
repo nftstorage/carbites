@@ -5,9 +5,9 @@ import fs from 'fs'
 import { pipeline } from 'stream/promises'
 import bytes from 'bytes'
 import { CarIndexedReader } from '@ipld/car'
-import { SimpleCarSplitter, SimpleCarJoiner } from '../lib/simple/index.js'
-import { RootedCarSplitter, RootedCarJoiner } from '../lib/rooted/index.js'
-import { TreewalkCarSplitter, TreewalkCarJoiner } from '../lib/treewalk/index.js'
+import { SimpleCarSplitter, SimpleCarJoiner } from 'carbites/simple'
+import { RootedCarSplitter, RootedCarJoiner } from 'carbites/rooted'
+import { TreewalkCarSplitter, TreewalkCarJoiner } from 'carbites/treewalk'
 
 /**
  * @param {string[]} argv
