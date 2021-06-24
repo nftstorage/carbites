@@ -9,6 +9,9 @@ import { SimpleCarSplitter, SimpleCarJoiner } from '../lib/simple/index.js'
 import { RootedCarSplitter, RootedCarJoiner } from '../lib/rooted/index.js'
 import { TreewalkCarSplitter, TreewalkCarJoiner } from '../lib/treewalk/index.js'
 
+/**
+ * @param {string[]} argv
+ */
 async function split (argv) {
   const cli = meow({
     importMeta: import.meta,
@@ -59,6 +62,9 @@ async function split (argv) {
   }
 }
 
+/**
+ * @param {string[]} argv
+ */
 async function join (argv) {
   const cli = meow({
     importMeta: import.meta,

@@ -11,7 +11,7 @@
   "scripts": {
     "build": "npm run build:js && npm run build:types",
     "build:js": "ipjs build --tests --main && npm run build:copy",
-    "build:copy": "cp -a tsconfig.json lib test dist/ ",
+    "build:copy": "cp -a tsconfig.json lib test bin dist/ ",
     "build:types": "npm run build:copy && cd dist && tsc --build",
     "test": "npm run lint && npm run test:node && npm run test:cjs",
     "test:node": "ava --verbose 'test/*.spec.js'",
@@ -30,6 +30,7 @@
     "multiformats": "^9.0.4"
   },
   "devDependencies": {
+    "@types/bytes": "^3.1.0",
     "@web-std/blob": "^2.1.0",
     "ava": "^3.15.0",
     "c8": "^7.7.2",
