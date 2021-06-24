@@ -118,8 +118,10 @@ Every CAR file has the _same_ root CID but a different portion of the DAG. The D
 
 ### CLI
 
+Install the CLI tool to use Carbites from the comfort of your terminal:
+
 ```sh
-npm i -g carbites
+npm i -g carbites-cli
 
 # Split a big CAR into many smaller CARs
 carbites split big.car --size 100MB --strategy simple # (default size & strategy)
