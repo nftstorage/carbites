@@ -5,7 +5,7 @@
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/carbites)](https://bundlephobia.com/package/carbites)
 
-Chunking for [CAR files](https://github.com/ipld/specs/blob/master/block-layer/content-addressable-archives.md). Split a single CAR into multiple CARs.
+Chunking for [CAR files](https://ipld.io/specs/transport/car/). Split a single CAR into multiple CARs.
 
 ## Install
 
@@ -37,7 +37,7 @@ for await (const car of splitter.cars()) {
 }
 ```
 
-⚠️ Note: The first CAR output has roots in the header, subsequent CARs have an empty root CID [`bafkqaaa`](https://cid.ipfs.io/#bafkqaaa) as [recommended](https://github.com/ipld/specs/blob/master/block-layer/content-addressable-archives.md#number-of-roots).
+⚠️ Note: The first CAR output has roots in the header, subsequent CARs have an empty root CID [`bafkqaaa`](https://cid.ipfs.io/#bafkqaaa) as [recommended](https://ipld.io/specs/transport/car/carv1/#number-of-roots).
 
 ### Rooted
 
