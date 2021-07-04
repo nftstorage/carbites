@@ -267,6 +267,10 @@ The API is the same as for [`CarJoiner`](#class-carjoiner).
 
 You can publish by either running `npm publish` in the `dist` directory or using `npx ipjs publish`.
 
+## Related
+  
+* [Carbites in Golang](https://github.com/alanshaw/go-carbites)
+
 ## Contribute
 
 Feel free to dive in! [Open an issue](https://github.com/nftstorage/carbites/issues/new) or submit PRs.
