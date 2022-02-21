@@ -114,3 +114,17 @@ test('fromIterable', async t => {
   }
   t.is(blocks.length, chunkedBlocks.length)
 })
+
+test('split with origin roots filler', async t => {
+  const targetSize = 100
+  const bytes = await collectBytes(await randomCar(1000))
+  const reader = await CarReader.fromBytes(bytes)
+  const originRoots = await reader.getRoots()
+  t.is(originRoots.length, 1)
+  const splitter = new SimpleCarSplitter(reader, targetSize, { fillRoots: 'origin' })
+  for await (const car of splitter.cars()) {
+    const reader = await CarReader.fromIterable(car)
+    const roots = await reader.getRoots()
+    t.true(originRoots[0].equals(roots[0]))
+  }
+})
