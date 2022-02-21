@@ -135,7 +135,7 @@ carbites join big-0.car big-1.car ...
 ## API
 
 * [`class CarSplitter`](#class-carsplitter)
-    * [`constructor(car: AsyncIterable<Uint8Array>, targetSize: number)`](#constructorcar-asynciterableuint8array-targetsize-number)
+    * [`constructor(car: AsyncIterable<Uint8Array>, targetSize: number, options?: Object)`](#constructorcar-asynciterableuint8array-targetsize-number-options-object)
     * [`cars(): AsyncGenerator<AsyncIterable<Uint8Array> & RootsReader>`](#cars-asyncgeneratorasynciterableuint8array--rootsreader)
     * [`static async fromBlob(blob: Blob, targetSize: number): CarSplitter`](#static-async-fromblobblob-blob-targetsize-number-carsplitter)
     * [`static async fromIterable(iterable: AsyncIterable<Uint8Array>, targetSize: number): CarSplitter`](#static-async-fromiterableiterable-asynciterableuint8array-targetsize-number-carsplitter)
@@ -165,9 +165,15 @@ import { CarSplitter } from 'carbites'
 
 Note: This is an alias of `SimpleCarSplitter` - the default strategy for splitting CARs.
 
-#### `constructor(car: CarReader, targetSize: number)`
+#### `constructor(car: CarReader, targetSize: number, options?: Object)`
 
 Create a new `CarSplitter` for the passed CAR file, aiming to generate CARs of around `targetSize` bytes in size.
+
+The following options are available:
+
+* `fillRoots: 'empty'|'origin'` - How to populate header roots. Default 'empty'.
+    * Specify 'empty' to populate split CAR header roots (after the first) with the empty CID "bafkqaaa".
+    * Specify 'origin' to populate all split CAR header roots with the roots found in the origin CAR file header.
 
 #### `cars(): AsyncGenerator<AsyncIterable<Uint8Array> & RootsReader>`
 
