@@ -15,11 +15,12 @@ npm install carbites
 
 ## Usage
 
-Carbites supports 3 different strategies:
+Carbites supports 4 different strategies:
 
 1. [**Simple**](#simple) (default) - fast but naive, only the first CAR output has a root CID, subsequent CARs have a placeholder "empty" CID.
 2. [**Rooted**](#rooted) - like simple, but creates a custom root node to ensure all blocks in a CAR are referenced.
 3. [**Treewalk**](#treewalk) - walks the DAG to pack sub-graphs into each CAR file that is output. Every CAR has the same root CID, but contains a different portion of the DAG.
+4. [**Treeleaf**](#treeleaf) - the first CAR contains all non-leaf nodes. Subsequent CARs contain only leaf-nodes.
 
 ### Simple
 
@@ -116,7 +117,55 @@ Every CAR file has the _same_ root CID but a different portion of the DAG. The D
 
 </details>
 
-### CLI
+### Treeleaf
+
+<details>
+  <summary>Example</summary>
+
+  ```js
+  import { TreeleafCarSplitter } from 'carbites/treeleaf'
+  import { CarReader } from '@ipld/car/reader'
+  import { printTree } from 'imaginary-car-tree-lib'
+  import fs from 'fs'
+
+  const bigCar = await CarReader.fromIterable(fs.createReadStream('/path/to/big.car'))
+  const targetSize = 1024 * 1024 * 100 // chunk to ~100MB CARs
+  const splitter = new TreeleafCarSplitter(bigCar, targetSize)
+
+  const count = 0
+  for await (const car of splitter.cars()) {
+    const reader = await CarReader.fromIterable(car)
+    const [splitCarRootCid] = await reader.getRoots()
+    console.log(`## car ${count} – root: ${splitCarRootCid}`)
+    console.log(printTree(reader))
+    count++
+  }
+  /* output:
+  ## car 0 - root: CID(bafybeidpq6auelplqkozwd3kobvgv4jow72r2yt6ffjzenemqhylmmxngi)
+  bafybeidpq6auelplqkozwd3kobvgv4jow72r2yt6ffjzenemqhylmmxngi
+  └─┬ bafybeibw77p4afchrvmo6ep4fpv7j4aehrn2yqs3tv3uuofc6oag36zq2q
+    ├─┬ bafybeih2w5euyf3sodc6efxtpahgwkata46fupjysi4bbnazb4n2b25rry
+    │ └─┬ bafybeif5xvhik6thha5ykg3g73jo3mqd5mhb7orzeznnvwquashmwryhai
+    │   ├── bafkreidkmypp3asq3xiu6mmtcfbzmmhcobpmnaqcyns6535w3u7bz7el64  ❌ missing
+    │   ├── bafkreid3pefuwyvhsnlrz6xk67f4f6opgqhcrle4bf47kvachwojdgt7re  ❌ missing
+    │   └── bafkreigr3beehu5ebbgoisx4rl2vyaqebmohubauc6avefodb5jauz3tyi  ❌ missing
+    └─┬ bafybeia2i6eqwfqrixh446pavwev37kywowmdpgvx34fbv7asdh3qwpm3y
+      └── bafkreih2bhak5yv7g4vft5c37j7dw5rqnnsyyuzsifczehhhpm3t655oae    ❌ missing
+  
+  ## car 1 - root: CID(bafkqaaa)
+  bafkreidkmypp3asq3xiu6mmtcfbzmmhcobpmnaqcyns6535w3u7bz7el64
+  bafkreid3pefuwyvhsnlrz6xk67f4f6opgqhcrle4bf47kvachwojdgt7re
+  bafkreigr3beehu5ebbgoisx4rl2vyaqebmohubauc6avefodb5jauz3tyi
+  bafkreih2bhak5yv7g4vft5c37j7dw5rqnnsyyuzsifczehhhpm3t655oae
+  */
+  ```
+
+  ⚠️ Note: The first CAR output has roots in the header, subsequent CARs have an empty root CID [`bafkqaaa`](https://cid.ipfs.io/#bafkqaaa) as [recommended](https://ipld.io/specs/transport/car/carv1/#number-of-roots).
+
+</details>
+
+
+## CLI
 
 Install the CLI tool to use Carbites from the comfort of your terminal:
 
