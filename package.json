@@ -21,6 +21,7 @@
   "dependencies": {
     "@ipld/car": "^3.0.1",
     "@ipld/dag-cbor": "^6.0.3",
+    "@ipld/dag-json": "^9.0.1",
     "@ipld/dag-pb": "^2.0.2",
     "multiformats": "^9.0.4"
   },
