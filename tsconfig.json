@@ -47,7 +47,9 @@
     "node_modules",
     "esm",
     "cjs",
-    "test"
+    "test",
+    "dist",
+    "./**/*.d.ts"
   ],
   "compileOnSave": false
 }
