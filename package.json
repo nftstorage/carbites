@@ -1,6 +1,6 @@
 {
   "name": "carbites",
-  "version": "1.0.6",
+  "version": "2.0.0",
   "description": "Chunking for CAR files. Split a single CAR into multiple CARs.",
   "main": "lib/index.js",
   "types": "./types/index.d.ts",
