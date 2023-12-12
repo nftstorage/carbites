@@ -92,5 +92,10 @@
     "chunking",
     "split",
     "splitter"
+  ],
+  "files": [
+    "lib",
+    "tsconfig.json",
+    "types"
   ]
 }
