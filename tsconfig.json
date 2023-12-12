@@ -48,8 +48,7 @@
     "esm",
     "cjs",
     "test",
-    "dist",
-    "./**/*.d.ts"
+    "types"
   ],
   "compileOnSave": false
 }
