@@ -47,7 +47,8 @@
     "node_modules",
     "esm",
     "cjs",
-    "test"
+    "test",
+    "types"
   ],
   "compileOnSave": false
 }
